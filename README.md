@@ -19,6 +19,7 @@ Live: https://day1-seedless-wallet.vercel.app (Sui testnet)
 | `scripts/rehearse.ts` | The whole lifecycle in Node with software passkeys, through the same API handlers |
 | `scripts/e2e-browser.ts` | The whole lifecycle in headless Chrome with a CDP virtual authenticator (real WebAuthn) |
 | `scripts/soft-passkey.ts` | A software authenticator implementing the SDK's `PasskeyProvider` |
+| `scripts/origin-binding.ts` | Shows a localhost passkey is invisible to the Vercel origin |
 
 ## Setup from a fresh clone
 
@@ -93,15 +94,17 @@ Recovery. The demo adds a second passkey (another device in real life, or the sa
 
 ## Verified on testnet
 
-See `../day1-STATE.md` in the class folder for every digest. Headless Chrome with a virtual authenticator, through the app:
+Run with `APP_URL=https://day1-seedless-wallet.vercel.app pnpm e2e`: headless Chrome, CDP virtual authenticator, real WebAuthn against the deployed origin. Account `0x1a7442001295c23fbc8820ae4c74d7154fb8bcc5c3f945f167a803253f4b8433`.
 
 | Step | Digest |
 | --- | --- |
-| First send, sponsored, signed by passkey | `ERitri2Stv2e5gcmh3LYnRCTFvjNbYKvfFCBYftHc1kr` |
-| `address_alias::enable` | `AzBXVZ8obdem49U6JfWsHaut5t5sYuHznzegD6D5gnj8` |
-| `address_alias::add` recovery passkey | `GRhVcjNSstavvJ3RtKCmLTWsbksWdzYTdguqvmpUacVJ` |
-| Send as the original address, signed by the recovery passkey | `BBFrunH1goxpnZsM3j2TTV1VaciMvuzdSd8apEmPsR36` |
-| Rotate: `add` new passkey + `remove` original in one PTB | `6YzuPH93FtNf5joCnqimjq7sFihC1UzgRdFa2RvfgsbM` |
-| Send signed by the new passkey | `9uUqbM7yyYVgFjvzWAZUGLYDfYvTYPVoLsy7Mh2CQW5T` |
+| First send, sponsored, signed by passkey (signature flags 6 and 0) | `CXGTFEEqPvm8BmfpzsZN6MgTSXMT1bt5qbLcEfhDx8pB` |
+| `address_alias::enable` | `96NmPZhFZgkgBNGESzLJtoQ7sMic4Jep4vpH6H7N46mX` |
+| `address_alias::add` recovery passkey | `F8oFA2ExzLnf1zPX6PFN8rw9xo9QNTGEqRbRSkFkJ7gr` |
+| Send as the original address, signed by the recovery passkey | `8RUKx9Q59UdJ8dRLhAcPiB2Rum5ngSzh1SKpASJdajXh` |
+| Rotate: `add` new passkey + `remove` original in one PTB | `FytKnGWkd6YaaPh3zQfhwtfLGeCFHHuNtzr3ENS2e9dT` |
+| Send signed by the new passkey, same address | `A2EHnzszLZdxUjP6Noo8M6vXGnAfiERoaCtjYoFMUP92` |
 
-Mainnet protocol config (version 138) has `passkey_auth: true` and `address_aliases: true`, and the `AddressAliasState` object `0xa` exists on mainnet.
+`scripts/origin-binding.ts` creates a passkey on localhost and then asks for one on the Vercel URL with the same authenticator: `NotAllowedError`.
+
+Mainnet protocol config (version 138) has `passkey_auth: true`, `address_aliases: true` and `accept_passkey_in_multisig: true`, and the `AddressAliasState` object `0xa` exists on mainnet.

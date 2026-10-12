@@ -35,7 +35,8 @@ export function describe(txBytes: Uint8Array, sim: { Transaction?: SimTx; Failed
 			if (input.$kind === 'FundsWithdrawal') return 'withdrawal from sender balance';
 			return input.$kind;
 		});
-		return `${c.MoveCall.module}::${c.MoveCall.function}<${(c.MoveCall.typeArguments ?? []).map((t) => coinLabel(t).symbol).join(',')}>(${args.join(', ')})`;
+		const ty = (c.MoveCall.typeArguments ?? []).map((t) => coinLabel(t).symbol);
+		return `${c.MoveCall.module}::${c.MoveCall.function}${ty.length ? `<${ty.join(',')}>` : ''}(${args.join(', ')})`;
 	});
 	const tx = sim?.Transaction ?? sim?.FailedTransaction;
 	const changes = (tx?.balanceChanges ?? []).map((b) => {
