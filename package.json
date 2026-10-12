@@ -1,0 +1,36 @@
+{
+  "name": "day1-seedless-wallet",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "rehearse": "tsx scripts/rehearse.ts",
+    "e2e": "tsx scripts/e2e-browser.ts",
+    "alias": "tsx scripts/alias-state.ts"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@mysten/sui": "2.35.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@noble/curves": "^2.3.0",
+    "@noble/hashes": "^2.3.0",
+    "@types/node": "22",
+    "@types/react": "18",
+    "@types/react-dom": "18",
+    "@vercel/node": "^23.0.1",
+    "@vitejs/plugin-react": "^4.7.0",
+    "dotenv": "^18.0.7",
+    "puppeteer-core": "^25.13.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vite": "6"
+  }
+}

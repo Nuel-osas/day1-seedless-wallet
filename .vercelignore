@@ -1,0 +1,11 @@
+node_modules
+dist
+.vercel
+.env
+.env.*
+!.env.example
+.secrets
+*.key
+scripts/.rehearsal*.json
+scripts/.shots
+scripts/.e2e-result.json
