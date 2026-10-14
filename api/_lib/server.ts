@@ -20,6 +20,9 @@ export const MAX_GAS_BUDGET = 50_000_000n; // 0.05 SUI per transaction
 
 const ALLOWED_TARGETS = new Set([
 	'0x2::balance::send_funds',
+	// SUI that arrives from a wallet or faucet is a Coin object, not address balance. The SDK then
+	// splits it and sends the change back with coin::send_funds. Still only the sender's own funds.
+	'0x2::coin::send_funds',
 	'0x2::balance::redeem_funds',
 	'0x2::coin::redeem_funds',
 	'0x2::coin::into_balance',
