@@ -25,16 +25,23 @@ class TrackingProvider implements PasskeyProvider {
 	}
 }
 
-function provider(label = RP_NAME) {
+// 'phone' forces the cross-device flow: the browser goes straight to a QR code, the phone scans
+// it, and the passkey is created and kept on the phone. Without it, a Mac offers Touch ID or
+// Chrome's own store first and the QR is buried under "use a different device".
+export type Where = 'any' | 'phone';
+
+function provider(label = RP_NAME, where: Where = 'any') {
 	return new TrackingProvider(
 		new BrowserPasskeyProvider(RP_NAME, {
+			// Spread into publicKey by the SDK. 'hybrid' = phone over QR + Bluetooth.
+			...(where === 'phone' ? { hints: ['hybrid'] } : {}),
 			// rp.id defaults to the page's host. The passkey only ever works on this host.
 			rp: { id: window.location.hostname, name: RP_NAME },
 			user: { name: label, displayName: label },
 			authenticatorSelection: {
 				// SDK default is 'cross-platform' (phone or security key only). Leaving it unset lets
 				// the OS offer Touch ID / Face ID / Windows Hello as well as a phone.
-				authenticatorAttachment: undefined,
+				authenticatorAttachment: where === 'phone' ? 'cross-platform' : undefined,
 				residentKey: 'required',
 				userVerification: 'required',
 			},
@@ -51,8 +58,8 @@ export type StoredPasskey = {
 };
 
 // Registration. The public key is only returned here, so it must be persisted.
-export async function createPasskey(label: string): Promise<StoredPasskey> {
-	const p = provider(label);
+export async function createPasskey(label: string, where: Where = 'any'): Promise<StoredPasskey> {
+	const p = provider(label, where);
 	const kp = await PasskeyKeypair.getPasskeyInstance(p);
 	return {
 		kind: 'passkey',

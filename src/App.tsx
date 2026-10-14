@@ -443,12 +443,18 @@ function WalletView(props: {
 									storage.rememberDeviceKey(k);
 									await addAlias(k.address, 'Add recovery passkey');
 								})}>{Icon.face} Add recovery passkey</button>
+								<button className="ghost" data-testid="add-phone-passkey" onClick={() => guard('Scan the QR code with your phone', async () => {
+									const k = await createPasskey('Face ID Wallet phone', 'phone');
+									storage.rememberDeviceKey(k);
+									await addAlias(k.address, 'Add phone passkey (QR)');
+								})}>{Icon.phone} Add passkey from my phone (QR)</button>
 								<button className="ghost" onClick={() => guard('Creating guardian key', async () => {
 									const kp = Ed25519Keypair.generate();
 									setShownSecret(kp.getSecretKey());
 									await addAlias(kp.toSuiAddress(), 'Add guardian key');
 								})}>{Icon.key} Add guardian key</button>
 							</div>
+							<p className="hint mt-s">On a laptop, "Add recovery passkey" may save to this same computer. To survive losing this laptop, use the phone button: scan the QR, approve with Face ID, and the key lives on your phone.</p>
 							{shownSecret && (
 								<div className="secret">Guardian secret, shown once. Give it to your guardian or store it offline.<code>{shownSecret}</code></div>
 							)}
